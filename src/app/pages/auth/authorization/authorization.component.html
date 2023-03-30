@@ -1,0 +1,34 @@
+<div class="d-flex login-input-wrap m-auto flex-column">
+  <div>
+    <span>Login</span>
+    <input type="text"
+           class="mt-1"
+           pInputText
+           [ngClass]="{'input-error': !login}"
+           [(ngModel)]="login"/>
+  </div>
+  <div>
+    <span>Password</span>
+    <input type="password"
+           pInputText
+           [(ngModel)]="psw"
+           [ngClass]="{'input-error': !psw}"/>
+  </div>
+  <div>
+    <p-checkbox name="groupname" (onChange)="vipStatusSelected()" [binary]="true"
+                [(ngModel)]="selectedValue"></p-checkbox>
+    <span class="mx-3">number card</span>
+    <div *ngIf="selectedValue">
+      <input type="text"
+             class="mt-1"
+             pInputText
+             [(ngModel)]="cardNumber"/>
+    </div>
+  </div>
+  <div class="mt-4">
+    <button type="button" class="btn btn-success" (click)="onAuth($event)">
+      {{authTextButton}}
+    </button>
+  </div>
+</div>
+

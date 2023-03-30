@@ -1,0 +1,20 @@
+:host {
+  height: 60px;
+  width: 100%;
+  display: block;
+}
+
+.timer-block {
+  position: absolute;
+  right: 0;
+  padding: 4px;
+}
+
+.login {
+  position: absolute;
+  right: 5rem;
+  top: 1rem;
+  font-weight: bold;
+  color: gray;
+  padding: 0 1rem;
+}

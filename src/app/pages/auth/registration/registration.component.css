@@ -1,0 +1,8 @@
+.registration-input-wrap span{
+  width: 176px;
+  display: inline-block;
+}
+
+.registration-input-wrap input{
+  display: inline-block;
+}

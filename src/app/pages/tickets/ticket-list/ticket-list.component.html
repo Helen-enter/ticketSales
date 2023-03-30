@@ -1,0 +1,24 @@
+<div *ngIf="tickets">
+  <div>
+    <p>Количество элементов: {{tourWrap.childElementCount}}</p>
+    <p>Активный элемент: {{blockDirective.activeElementIndex}}</p>
+  </div>
+  <div appBlocksStyle
+       #tourWrap
+       #blockDirective='blocksStyle'
+       [selector]="'.ticket-item'"
+       [initFirst]="true"
+       class="d-flex flex-wrap justify-content-around">
+    <div class="ticket-item col-3 m-2"
+         (click)="goToTicketInfoPage(item)"
+         *ngFor="let item of tickets">
+      <div class="ticket-title">{{item.name}}</div>
+      <div class="ticket-img">
+        <img class="w-100" src="/assets/img/{{item.img}}">
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-toast position="top-left"></p-toast>
+
