@@ -23,6 +23,8 @@ export class TicketListComponent implements OnInit, OnDestroy, AfterViewInit {
   searchTicketSub: Subscription
   ticketSearchValue: string
 
+  ticketsLoad = false
+
 
   constructor(private ticketService: TicketService,
               private router: Router,
@@ -31,7 +33,7 @@ export class TicketListComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   ngOnInit(): void {
-
+   // this.tickets = []
 
     this.ticketService.getTickets().subscribe(
       (data) => {

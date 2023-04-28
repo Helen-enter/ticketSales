@@ -53,15 +53,7 @@ export class TicketItemComponent implements OnInit, AfterViewInit, OnDestroy {
 
     //getNearestTours
 
-    forkJoin([this.ticketService.getNearestTours(), this.ticketService.getToursLocation()]).subscribe((data) => {
-
-      console.log('data', data)
-
-      this.toursLocation = data[1]
-     // this.nearestTours = data[0]
-
-      this.nearestTours = this.ticketService.transformData(data[0], data[1])
-    })
+    this.getTours()
 
 
     //params
@@ -100,16 +92,21 @@ export class TicketItemComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
 
-  initSearchTour() {
-    const type = Math.floor(Math.random() * this.searchTypes.length)
-    //unsubscribe
-    if (this.ticketRestSub && !this.searchTicketSub.closed) {
-      this.ticketRestSub.unsubscribe()
-    }
 
-    this.ticketRestSub = this.ticketService.getRandomNearestEvent(type).subscribe((data) => {
-      this.nearestTours = this.ticketService.transformData([data], this.toursLocation)
-    })
+  initSearchTour() {
+    if (this.ticketSearchValue) {
+      const type = Math.floor(Math.random() * this.searchTypes.length)
+      //unsubscribe
+      if (this.ticketRestSub && !this.searchTicketSub.closed) {
+        this.ticketRestSub.unsubscribe()
+      }
+
+      this.ticketRestSub = this.ticketService.getRandomNearestEvent(type).subscribe((data) => {
+        this.nearestTours = this.ticketService.transformData([data], this.toursLocation)
+      })
+    } else {
+      this.getTours()
+    }
   }
 
   initTour(): void {
@@ -122,4 +119,18 @@ export class TicketItemComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log('this.userForm.getRawValue()', this.userForm.getRawValue())
   }
 
+  getTours() {
+    forkJoin([this.ticketService.getNearestTours(), this.ticketService.getToursLocation()]).subscribe((data) => {
+
+      console.log('data', data)
+
+      this.toursLocation = data[1]
+      // this.nearestTours = data[0]
+
+      this.nearestTours = this.ticketService.transformData(data[0], data[1])
+    })
+  }
+
 }
+
+

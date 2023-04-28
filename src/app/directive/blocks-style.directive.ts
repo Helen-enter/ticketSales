@@ -34,6 +34,7 @@ export class BlocksStyleDirective implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+
   }
 
   ngAfterViewInit() {
