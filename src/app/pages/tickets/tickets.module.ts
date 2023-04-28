@@ -14,6 +14,9 @@ import {BlocksStyleDirective} from "../../directive/blocks-style.directive";
 import {MessageService} from "primeng/api";
 import { MessagesModule } from 'primeng/messages';
 import {ToastModule} from "primeng/toast";
+import {CalendarModule} from "primeng/calendar";
+import {InputTextModule} from "primeng/inputtext";
+import {SettingsComponent} from "../settings/settings/settings.component";
 
 
 @NgModule({
@@ -23,20 +26,22 @@ import {ToastModule} from "primeng/toast";
     FooterComponent,
     TicketListComponent,
     AsideComponent,
-    BlocksStyleDirective
+    BlocksStyleDirective,
   ],
   exports: [
     TicketsComponent
   ],
-  imports: [
-    CommonModule,
-    TicketsRoutingModule,
-    MessagesModule,
-    MenubarModule,
-    DropdownModule,
-    FormsModule,
-    ToastModule
-  ],
+    imports: [
+        CommonModule,
+        TicketsRoutingModule,
+        MessagesModule,
+        MenubarModule,
+        DropdownModule,
+        FormsModule,
+        ToastModule,
+        CalendarModule,
+        InputTextModule,
+    ],
   providers: [
     MessageService
   ]

@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from "../../../srevices/auth/auth.service";
 import {IUser} from "../../../models/users";
 import {Router} from "@angular/router";
@@ -40,10 +40,12 @@ export class AuthorizationComponent implements OnInit, OnDestroy {
   onAuth(ev: Event): void {
     const authUser: IUser = {
       psw: this.psw,
-      login: this.login
+      login: this.login,
+      cardNumber: this.cardNumber
     }
     if (this.authService.checkUser(authUser)) {
       this.userService.setUser(authUser)
+      this.userService.setToken('user-private-token')
       this.router.navigate(['tickets/tickets-list'])
     } else {
      this.messageService.add({severity: 'error', summary: 'Check the entered data'})

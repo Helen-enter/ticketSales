@@ -1,3 +1,28 @@
-<div class="text-center h2">
-  <p>Здесь будут настройки!</p>
+<div>
+  <p-tabView>
+    <p-tabPanel header="Смена пароля">
+      <div>
+        <p>Текущий пароль</p>
+        <input [(ngModel)]="psw" type="password" pInputText/>
+      </div>
+      <div>
+        <p>Новый пароль</p>
+        <input [(ngModel)]="newPsw" type="password" pInputText/>
+      </div>
+      <div>
+        <p>Повтор нового пароля</p>
+        <input [(ngModel)]="pswRepeat" type="password" pInputText/>
+      </div>
+      <div class="mt-3">
+        <p-button (onClick)="changePassword()">Сменить пароль</p-button>
+      </div>
+    </p-tabPanel>
+    <p-tabPanel header="Статистика">
+      <ng-template pTemplate="content">
+        <app-statistic></app-statistic>
+      </ng-template>
+    </p-tabPanel>
+  </p-tabView>
+
 </div>
+<p-toast position="top-left"></p-toast>

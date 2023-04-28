@@ -29,7 +29,7 @@
            pInputText
            [(ngModel)]="email"/>
   </div>
-  <div>
+  <div *ngIf="showCardNumber; else noSelected">
     <span>Card number</span>
     <input type="text"
            class="mt-1"
@@ -47,3 +47,6 @@
     Registration
   </button>
 </div>
+<ng-template #noSelected>
+  <p>Карта не выбрана</p>
+</ng-template>

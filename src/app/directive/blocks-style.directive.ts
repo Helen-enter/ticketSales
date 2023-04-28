@@ -18,7 +18,7 @@ import {MessageService} from "primeng/api";
   },
   exportAs: 'blocksStyle'
 })
-export class BlocksStyleDirective implements OnInit, AfterViewInit, OnChanges {
+export class BlocksStyleDirective implements OnInit, AfterViewInit {
   @Input() selector: string
   @Input() initFirst: boolean = false
 
@@ -26,9 +26,8 @@ export class BlocksStyleDirective implements OnInit, AfterViewInit, OnChanges {
 
   private items: HTMLElement[]
   private index: number = 0
+  public activeElementIndex: number = 0
   $event: KeyboardEvent;
-
-  public activeElementIndex: number
 
   constructor(private el: ElementRef,
               private messageService: MessageService) {
@@ -49,9 +48,6 @@ export class BlocksStyleDirective implements OnInit, AfterViewInit, OnChanges {
     } else {
       console.log('не передан селектор')
     }
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
   }
 
 
@@ -93,6 +89,10 @@ export class BlocksStyleDirective implements OnInit, AfterViewInit, OnChanges {
     if (this.items[index]) {
       (this.items[index] as HTMLElement).setAttribute('style', 'border: 2px solid red')
     }
+  }
+
+  updateItems(): void {
+    this.items = this.el.nativeElement.querySelectorAll(this.selector);
   }
 
 }

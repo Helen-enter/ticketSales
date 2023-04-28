@@ -10,6 +10,27 @@ export class AuthService {
   constructor() {
   }
 
+  checkUserPassword(psw: string | number) {
+    return this.usersStorage.find(el => el.psw === psw)
+      // ?
+      // console.log('пароль найден')
+      // : console.log('пароль не найден')
+  }
+
+  changePassword(newPsw: any) {
+    this.usersStorage.map((el) => {
+      {
+        el.login,
+          el?.cardNumber,
+          el.email,
+          el.psw = newPsw
+      }
+      console.log('пароль изменен на ', this.usersStorage.find(el => (`${el.psw}`)))
+
+    })
+  }
+
+
   checkUser(user: IUser): boolean {
     const isUserExists = this.usersStorage.find(el => el.login === user.login)
 
