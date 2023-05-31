@@ -1,0 +1,59 @@
+<div class="mt-4" [formGroup]="tourForm">
+<!--  <div class="mt-3">-->
+<!--    <span class="mx-3">Описание тура</span>-->
+<!--    <input type="text"-->
+<!--           pInputText-->
+<!--           class="mt-3"-->
+<!--           formControlName="description"-->
+<!--    />-->
+<!--  </div>-->
+  <div class="mt-3">
+    <span class="mx-3">Название тура</span>
+    <input type="text"
+           pInputText
+           class="mt-3"
+           formControlName="name"
+    />
+  </div>
+  <div class="mt-3">
+    <span class="mx-3">Описание тура</span>
+    <input type="text"
+           pInputText
+           class="mt-3"
+           formControlName="description"
+    />
+  </div>
+  <div class="mt-3">
+    <span class="mx-3">Туроператор</span>
+    <input type="text"
+           pInputText
+           class="mt-3"
+           formControlName="operator"
+    />
+  </div>
+  <div class="mt-3">
+    <span class="mx-3">Стоимость</span>
+    <input type="text"
+           pInputText
+           class="mt-3"
+           formControlName="price"
+    />
+  </div>
+  <div class="mt-3">
+    <span class="mx-3">Изображение</span>
+    <input type="file"
+           value="file"
+           pInputText
+           class="mt-3"
+           (change)="selectFile($event)"
+           formControlName="img"
+    />
+  </div>
+  <div class="mt-4">
+    <button class="btn-success btn" type="submit"
+            (click)="createTour()"
+            [disabled]="!tourForm.valid">
+      Создать тур
+    </button>
+  </div>
+</div>

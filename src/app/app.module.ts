@@ -8,6 +8,7 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {RestInterceptorsService} from './srevices/interceptors/rest-interceptors.service';
 import {ConfigService} from "./srevices/config/config.service";
 
+
 function initializeApp(config: ConfigService) {
   return () => config.loadPromise().then(() => {
     console.log('---CONFIG LOADED--', ConfigService.config)

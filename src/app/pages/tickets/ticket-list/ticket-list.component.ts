@@ -1,18 +1,19 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnChanges, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {TicketService} from 'src/app/srevices/tickets/ticket.service';
-import {ITour, ITourTypeSelect} from "../../../models/tours";
-import {TicketsStorageService} from "../../../srevices/tiсkets-storage/tiсkets-storage.service";
+import {ITour, ITourClient, ITourTypeSelect} from "../../../models/tours";
 import {Router} from "@angular/router";
 import {BlocksStyleDirective} from "../../../directive/blocks-style.directive";
 import {Subscription} from 'rxjs/internal/Subscription';
 import {debounceTime, fromEvent} from "rxjs";
+import {HttpClient} from "@angular/common/http";
+
 
 @Component({
   selector: 'app-ticket-list',
   templateUrl: './ticket-list.component.html',
   styleUrls: ['./ticket-list.component.scss']
 })
-export class TicketListComponent implements OnInit, OnDestroy, AfterViewInit {
+export class TicketListComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
   tickets: ITour[] = []
   ticketsCopy: ITour[];
   tourUnsubscriber: Subscription;
@@ -23,23 +24,37 @@ export class TicketListComponent implements OnInit, OnDestroy, AfterViewInit {
   searchTicketSub: Subscription
   ticketSearchValue: string
 
-  ticketsLoad = false
-
+  ticketsLoad: boolean = false
+  directiveReady = false
 
   constructor(private ticketService: TicketService,
               private router: Router,
-              private ticketStorage: TicketsStorageService) {
+              private http: HttpClient) {
   }
 
 
   ngOnInit(): void {
-   // this.tickets = []
+    this.ticketService.getTickets().subscribe(data => {
+      data.forEach((el) => {
+        //@ts-ignore
+        this.tickets.push(el.img)
+      })
+      console.log('data gettbckets', data[6].img)
+    })
+
+
+    this.ticketService.ticketUpdateSubject$.subscribe((data) => {
+      this.tickets = data
+    })
 
     this.ticketService.getTickets().subscribe(
       (data) => {
+        // @ts-ignore
         this.tickets = data
         this.ticketsCopy = [...this.tickets];
-        this.ticketStorage.setStorage(data)
+        //this.ticketStorage.setStorage(data)
+        this.ticketsLoad = true
+
       }
     )
 
@@ -94,6 +109,13 @@ export class TicketListComponent implements OnInit, OnDestroy, AfterViewInit {
       })
     )
 
+    this.blockDirective.updateItems()
+
+
+  }
+
+  ngOnChanges() {
+
   }
 
   ngOnDestroy() {
@@ -101,14 +123,19 @@ export class TicketListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.searchTicketSub.unsubscribe()
   }
 
-  goToTicketInfoPage(item: ITour) {
-    this.router.navigate([`tickets/ticket/${item.id}`])
+  goToTicketInfoPage(item: ITour) { ////!!!!
+
+    this.router.navigate([`tickets/ticket/${item._id}`])
+    this.ticketService.setStorage(item)
+
+    console.log('ticket_id', item._id)
   }
 
   directiveRenderComplete(ev: Event) {
     const el: HTMLElement = this.tourWrap.nativeElement
 
     el.setAttribute('style', 'background-color: #f1fff')
+    this.directiveReady = true
 
   }
 
@@ -141,14 +168,15 @@ export class TicketListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
-  getTickets() {
-    this.ticketService.getTickets().subscribe(
-      (data) => {
-        this.tickets = data;
-        this.ticketsCopy = [...this.tickets];
-        this.ticketStorage.setStorage(data);
-      }
-    )
-  }
+  // getTickets() {
+  //   this.ticketService.getTickets().subscribe(
+  //     (data) => {
+  //       this.tickets = data;
+  //       this.ticketsCopy = [...this.tickets];
+  //       this.ticketStorage.setStorage(data);
+  //     }
+  //   )
+  // }
+
 
 }

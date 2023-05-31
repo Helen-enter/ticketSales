@@ -16,11 +16,12 @@ export class RestInterceptorsService implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
     const hasToken = this.userService.getToken()
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6IjEyIiwicHN3IjoiMSIsImlhdCI6MTY4MzY0OTU0Nn0.kuxyW4oPow2ow1NAU2TjSXewkIyC-qtujkYzA6fa6DI"
 
     if (hasToken) {
       const cloned = req.clone({
         headers: req.headers.set('Authorization',
-          'Bearer' + hasToken)
+          'Bearer ' + hasToken)
       })
 
       return next.handle(cloned)

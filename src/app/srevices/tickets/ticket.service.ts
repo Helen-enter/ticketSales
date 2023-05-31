@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {TicketRestService} from "../rest/ticket-rest.service";
-import {map, Observable, Subject} from "rxjs";
-import {INearestTour, INewTour, ITour, ITourLocation, ITourTypeSelect} from "../../models/tours";
+import {map, Observable, Subject, Subscriber, Subscription} from "rxjs";
+import {INearestTour, INewTour, ITour, ITourClient, ITourLocation, ITourTypeSelect} from "../../models/tours";
 import {ICustomTicketData} from "../../models/tickets";
 
 @Injectable({
@@ -12,10 +12,20 @@ export class TicketService {
   // 1 вариант доступа к Observable
   // readonly ticketType$ = this.ticketSubject.asObservable();
 
+  private ticketUpdateSubject = new Subject<ITour[]>();
+  readonly ticketUpdateSubject$ = this.ticketUpdateSubject.asObservable();
+
+  private ticket: ITour
+  private value: boolean
+
   constructor(private ticketServiceRest: TicketRestService) {
   }
 
-  getTickets(): Observable<ITour[]> {
+  // postTourItem(): Observable<ITourClient> {
+  //   return this.ticketServiceRest.postTourItem()
+  // }
+
+  getTickets(): Observable<ITourClient[]> {
     return this.ticketServiceRest.getTickets()
     //   .pipe(map(
     //   (value) => {
@@ -23,6 +33,10 @@ export class TicketService {
     //     return value.concat(singleTour)
     //   }
     // ))
+  }
+
+  getTours(): Observable<ITour[]> {
+    return this.ticketServiceRest.getTours()
   }
 
   // 2 вариант доступа к Observable
@@ -80,6 +94,32 @@ export class TicketService {
     });
     console.log('ntd', newTicketData)
     return newTicketData;
+  }
+
+  updateTicketList(data: ITour[]) {
+    this.ticketUpdateSubject.next(data);
+  }
+
+  getTicketById(id: string): Observable<ITourClient> {
+    return this.ticketServiceRest.getTicketsById(id)
+  }
+
+  setStorage(item: ITour): void {
+    this.ticket = item
+    // запись данных в this.ticketStorage
+  }
+
+  getStorage(): ITour {
+    return this.ticket
+    // возвращает в this.ticketStorage
+  }
+
+  createTour(body: ITourClient): Observable<any> {
+    return this.ticketServiceRest.createTour(body)
+  }
+
+  getOrders() {
+    return this.ticketServiceRest.getOrders()
   }
 }
 

@@ -1,29 +1,34 @@
 <div>
   <ng-container>
-<!--    <p>Количество элементов: {{tourWrap.childElementCount}}</p>-->
+    <!--    <p>Количество элементов: {{tourWrap.childElementCount}}</p>-->
     <p>Количество элементов: {{tickets.length}}</p>
-    <p>Активный элемент: {{blockDirective.activeElementIndex + 1}}</p>
+    <p *ngIf="directiveReady">Активный элемент: {{blockDirective.activeElementIndex + 1}}</p>
   </ng-container>
-<!--  <input pInputText type="text" placeholder="поиск" (keyup)="findTours($event)"/>-->
-  <div >
-    <input #ticketSearch [(ngModel)]="ticketSearchValue"  type="text" pInputText/>
+  <!--  <input pInputText type="text" placeholder="поиск" (keyup)="findTours($event)"/>-->
+  <div>
+    <input #ticketSearch [(ngModel)]="ticketSearchValue" type="text" pInputText/>
   </div>
-  <div appBlocksStyle
-       #tourWrap
-       #blockDirective='blocksStyle'
-       [selector]="'.ticket-item'"
-       [initFirst]="true"
-       (renderComplete)="directiveRenderComplete($event)"
-       class="d-flex flex-wrap justify-content-around">
-    <div class="ticket-item col-3 m-2"
-         (click)="goToTicketInfoPage(item)"
-         *ngFor="let item of tickets">
-      <div class="ticket-title">{{item.name}}</div>
-      <div class="ticket-img">
-        <img class="w-100" src="/assets/img/{{item.img}}">
+
+
+    <div
+      appBlocksStyle
+      #tourWrap
+      *ngIf="ticketsLoad"
+      #blockDirective='blocksStyle'
+      [selector]="'.ticket-item'"
+      [initFirst]="true"
+      (renderComplete)="directiveRenderComplete($event)"
+      class="d-flex flex-wrap justify-content-around">
+      <div class="ticket-item col-3 m-2"
+           (click)="goToTicketInfoPage(item)"
+           *ngFor="let item of tickets">
+        <div class="ticket-title">{{item.name}}</div>
+        <div class="ticket-img">
+          <img class="w-100" src="http://localhost:3000/public/{{item.img}}">
+        </div>
       </div>
     </div>
-  </div>
+
 </div>
 
 <p-toast position="top-left"></p-toast>

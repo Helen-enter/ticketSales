@@ -21,12 +21,12 @@ export class UserService {
 
 
   setUser(user: IUser) {
-    let key = window.localStorage.getItem('user_' + user.login)
-    if (key) {
-      this.user = JSON.parse(key)
-      console.log(key)
-    }
-    // this.user = user
+    // let key = window.localStorage.getItem('user_' + user.login)
+    // if (key) {
+    //   this.user = JSON.parse(key)
+    //   console.log(key)
+    // }
+    this.user = user
     // записывается пользователь в this.user
   };
 
@@ -34,8 +34,12 @@ export class UserService {
     this.token = token
   }
 
-  getToken(): string {
-    return this.token
+  getToken(): string | null {
+    return this.token || window.localStorage.getItem('token')
+  }
+
+  setToStore(token: string) {
+    window.localStorage.setItem("token", token);
   }
 
 }

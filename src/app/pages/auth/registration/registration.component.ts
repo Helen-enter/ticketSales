@@ -3,6 +3,8 @@ import {MessageService} from 'primeng/api';
 import {IUser} from "../../../models/users";
 import {AuthService} from "../../../srevices/auth/auth.service";
 import {ConfigService} from "../../../srevices/config/config.service";
+import {HttpClient, HttpErrorResponse} from "@angular/common/http";
+import {ServerError} from "../../../models/error";
 
 @Component({
   selector: 'app-registration',
@@ -17,8 +19,9 @@ export class RegistrationComponent implements OnInit {
   cardNumber: string
   click: boolean
   showCardNumber: boolean
+  saveUserInStore: boolean = false
 
-  constructor(private messageService: MessageService, private authService: AuthService) {
+  constructor(private messageService: MessageService, private authService: AuthService, private http: HttpClient) {
   }
 
   ngOnInit(): void {
@@ -39,12 +42,25 @@ export class RegistrationComponent implements OnInit {
       cardNumber: this.cardNumber
     }
 
-    if (!this.authService.isUserExists(userObj)) {
-      this.authService.setUser(userObj)
-      this.messageService.add({severity: 'success', summary: 'Success'});
-    } else {
-      this.messageService.add({severity: 'warn', summary: 'User already registered'});
-    }
+    this.http.post<IUser>('http://localhost:3000/users/', userObj).subscribe((data) => {
+      if (this.saveUserInStore) {
+      const objUserJsonStr = JSON.stringify(userObj);
+      window.localStorage.setItem('user_' + userObj.login, objUserJsonStr);
+      }
+      this.messageService.add({severity: 'success', summary: 'Регистрация прошла успешно'});
+
+    }, (err: HttpErrorResponse) => {
+      console.log('err', err)
+      const serverError = <ServerError>err.error
+      this.messageService.add({severity: 'warn', summary: serverError.errorText});
+    });
+
+    // if (!this.authService.isUserExists(userObj)) {
+    //   this.authService.setUser(userObj)
+    //   this.messageService.add({severity: 'success', summary: 'Success'});
+    // } else {
+    //   this.messageService.add({severity: 'warn', summary: 'User already registered'});
+    // }
   }
 
   saveInLocalStorage(): boolean | void {

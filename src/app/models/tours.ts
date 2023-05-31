@@ -3,10 +3,11 @@ export interface ITour {
   description: string,
   tourOperator: string,
   price: string,
-  img: string,
-  id: string,
-  type: string,
-  date: string
+  img: string | null | undefined,
+  id?: string,
+  type?: string,
+  date?: string,
+  _id?: string
 }
 
 export interface ITourTypeSelect {
@@ -26,4 +27,12 @@ export interface ITourLocation {
 
 export interface INewTour extends INearestTour {
   nameCountry: string
+}
+
+export interface ITourClient {
+  name: string,
+  description: string,
+  tourOperator: string | null,
+  price: string | null,
+  img: string | null | undefined,
 }

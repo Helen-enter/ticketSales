@@ -1,0 +1,8 @@
+<div>
+  <h3>Мои заказы</h3>
+  <div *ngFor="let item of tickets">
+    <h4 class="mt-5">{{item.name}}</h4>
+    <p>{{item.description}}</p>
+    <img src="http://localhost:3000/public/{{item.img}}">
+    </div>
+</div>

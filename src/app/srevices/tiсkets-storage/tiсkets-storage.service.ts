@@ -16,8 +16,8 @@ export class TicketsStorageService {
     // запись данных в this.ticketStorage
   }
 
-  getStorage(): ITour[] {
-    return this.ticketStorage
-    // возвращает в this.ticketStorage
-  }
+  // getStorage(): ITour[] {
+  //   return this.ticketStorage
+  //   // возвращает в this.ticketStorage
+  // }
 }

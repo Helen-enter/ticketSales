@@ -1,9 +1,12 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {IMenuType} from 'src/app/models/menuType';
-import {ITourTypeSelect} from 'src/app/models/tours';
+import {ITour, ITourTypeSelect} from 'src/app/models/tours';
 import {TicketService} from "../../../srevices/tickets/ticket.service";
 import {MessageService} from "primeng/api";
 import {SettingsService} from "../../../srevices/settings/settings.service";
+import {HttpClient} from "@angular/common/http";
+import {Router} from "@angular/router";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-aside',
@@ -22,9 +25,12 @@ export class AsideComponent implements OnInit {
   selectedMenuType: IMenuType
   @Output() updateMenuType: EventEmitter<IMenuType> = new EventEmitter()
 
+  el: boolean = true
+
   constructor(private ticketService: TicketService,
               private messageService: MessageService,
-              private settingsService: SettingsService) {
+              private settingsService: SettingsService,
+              private http: HttpClient) {
   }
 
   ngOnInit(): void {
@@ -66,6 +72,26 @@ export class AsideComponent implements OnInit {
     this.settingsService.loadUserSettingsSubject({
       saveToken: false
     })
+  }
+
+  initTours(): void {
+    // this.http.get<ITour[]>('http://localhost:3000/tours/').subscribe((data) => {
+    //   this.ticketService.updateTicketList(data)
+    // })
+    this.http.post<ITour[]>('http://localhost:3000/tours/', {}).subscribe((data) => {
+      this.ticketService.updateTicketList(data)
+    })
+
+
+
+  }
+
+  deleteTours(): void {
+    this.http.delete('http://localhost:3000/tours/remove').subscribe((data) => {
+      this.ticketService.updateTicketList([])
+    })
+
+
   }
 
 }

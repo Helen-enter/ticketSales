@@ -9,6 +9,9 @@ import {forkJoin} from 'rxjs/internal/observable/forkJoin';
 import {TicketService} from "../../../srevices/tickets/ticket.service";
 import {fromEvent, Subscription} from "rxjs";
 import {ICustomTicketData} from "../../../models/tickets";
+import {IOrder} from 'src/app/models/order';
+import {Observable} from 'rxjs';
+import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'app-ticket-item',
@@ -23,8 +26,12 @@ export class TicketItemComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ticketSearchValue: string
   //nearestTours: ICustomTicketData[]
-  nearestTours: INewTour[]
+
+  nearestTours: ITour[] | any[]
+  private tours: Subscription
+
   toursLocation: ITourLocation[]
+  item: ITour
 
   @ViewChild('ticketSearch') ticketSearch: ElementRef
 
@@ -32,14 +39,18 @@ export class TicketItemComponent implements OnInit, AfterViewInit, OnDestroy {
   ticketRestSub: Subscription
   searchTypes = [1, 2, 3]
 
+  dataFilterTours: any = []
+
   constructor(private route: ActivatedRoute,
               private ticketStorage: TicketsStorageService,
               private userService: UserService,
-              private ticketService: TicketService) {
+              private ticketService: TicketService,
+              private http: HttpClient) {
   }
 
   ngOnInit(): void {
     this.user = this.userService.getUser()
+
 
     //init formGroup
     this.userForm = new FormGroup({
@@ -55,18 +66,21 @@ export class TicketItemComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.getTours()
 
+    this.ticket = this.ticketService.getStorage()
+    console.log('this.ticket', this.ticket)
 
     //params
-    const routeIdParam = this.route.snapshot.paramMap.get('id')
-    const queryIdParam = this.route.snapshot.queryParamMap.get('id')
-
-    const paramValueId = routeIdParam || queryIdParam
-
-    if (paramValueId) {
-      const ticketStorage = this.ticketStorage.getStorage()
-      this.ticket = ticketStorage.find(el => el.id === paramValueId)
-      console.log('this ticket:', this.ticket)
-    }
+    // const routeIdParam = this.route.snapshot.paramMap.get('id')
+    // const queryIdParam = this.route.snapshot.queryParamMap.get('id')
+    //
+    // const paramValueId = routeIdParam || queryIdParam
+    //
+    // if (paramValueId) {
+    //  const ticketStorage = this.ticketStorage.getStorage()
+    //   this.ticket = ticketStorage.find(el => el.id === paramValueId)
+    //   console.log('this ticket:', this.ticket)
+    //
+    // }
 
   }
 
@@ -94,16 +108,25 @@ export class TicketItemComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   initSearchTour() {
-    if (this.ticketSearchValue) {
-      const type = Math.floor(Math.random() * this.searchTypes.length)
-      //unsubscribe
-      if (this.ticketRestSub && !this.searchTicketSub.closed) {
-        this.ticketRestSub.unsubscribe()
-      }
 
-      this.ticketRestSub = this.ticketService.getRandomNearestEvent(type).subscribe((data) => {
-        this.nearestTours = this.ticketService.transformData([data], this.toursLocation)
+    if (this.ticketSearchValue) {
+
+      this.http.get('http://localhost:3000/ticket-item/' + this.ticketSearchValue ).subscribe((data) =>{
+        //@ts-ignore
+        this.nearestTours = data
+        console.log('nameTour', data)
       })
+
+
+      // const type = Math.floor(Math.random() * this.searchTypes.length)
+      // //unsubscribe
+      // if (this.ticketRestSub && !this.searchTicketSub.closed) {
+      //   this.ticketRestSub.unsubscribe()
+      // }
+      //
+      // this.ticketRestSub = this.ticketService.getRandomNearestEvent(type).subscribe((data) => {
+      //   //this.nearestTours = this.ticketService.transformData([data], this.toursLocation)
+      // })
     } else {
       this.getTours()
     }
@@ -113,22 +136,37 @@ export class TicketItemComponent implements OnInit, AfterViewInit, OnDestroy {
     const userData = this.userForm.getRawValue()
     const postData = {...this.ticket, ...userData}
 
-    this.ticketService.sendTourData(postData).subscribe()
+    const userId = this.userService.getUser()?.id || null;
+
+    const postObj: IOrder = {
+      age: postData.age,
+      birthDay: postData.birthDay,
+      cardNumber: postData.cardNumber,
+      tourId: postData._id,
+      userId: userId
+    }
+
+    this.ticketService.sendTourData(postObj).subscribe()
 
     console.log('postData', postData)
     console.log('this.userForm.getRawValue()', this.userForm.getRawValue())
   }
 
   getTours() {
-    forkJoin([this.ticketService.getNearestTours(), this.ticketService.getToursLocation()]).subscribe((data) => {
+    // forkJoin([this.ticketService.getNearestTours(), this.ticketService.getToursLocation()]).subscribe((data) => {
+    //
+    //   console.log('data', data)
+    //
+    //   this.toursLocation = data[1]
+    //
+    //
+    //   // this.nearestTours = this.ticketService.transformData(data[0], data[1])
+    // })
 
-      console.log('data', data)
-
-      this.toursLocation = data[1]
-      // this.nearestTours = data[0]
-
-      this.nearestTours = this.ticketService.transformData(data[0], data[1])
+    this.ticketService.getTours().subscribe((data) => {
+      this.nearestTours = data
     })
+
   }
 
 }
